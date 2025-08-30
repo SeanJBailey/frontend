@@ -1,0 +1,38 @@
+/* src/App.js */
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ReservationForm from "./components/ReservationForm";
+import ReservationList from "./components/ReservationList";
+import ReservationDetail from "./components/ReservationDetail";
+import "./index.css";
+
+function HomePage({ refreshFlag, handleNewReservation }) {
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-2xl font-bold mb-6">AutoTicket — Reservations</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ReservationForm onSuccess={handleNewReservation} />
+        <div className="bg-white p-4 rounded shadow">
+          <ReservationList refreshFlag={refreshFlag} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [refreshFlag, setRefreshFlag] = useState(0);
+  const handleNewReservation = () => setRefreshFlag(f => f + 1);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage refreshFlag={refreshFlag} handleNewReservation={handleNewReservation} />} />
+        <Route path="/reservation/:id" element={<ReservationDetail />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
