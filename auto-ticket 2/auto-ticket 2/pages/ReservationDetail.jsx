@@ -1,8 +1,7 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchReservationById } from "../../api/reservationApi";
-import "../styles/LoginSignup.css"
-
+import "../styles/Reservation.css";
 
 export default function ReservationDetail() {
   const { id } = useParams();
@@ -30,29 +29,32 @@ export default function ReservationDetail() {
     return () => { mounted = false; };
   }, [id]);
 
-  if (loading) return <div className="container"><div className="text">Loading reservation...</div></div>;
-  if (error) return (
-    <div className="container">
-      <div className="header">
-        <div className="text">Error</div>
-        <div className="underline"></div>
+  if (loading) return (
+    <div className="reservation-page">
+      <div className="reservation-detail-container">
+        <div className="loading-message">Loading reservation...</div>
       </div>
-      <div className="text-red-600 mb-3">{error}</div>
-      <div className="submit-container">
-        <div className="submit" onClick={() => navigate(-1)}>Go back</div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="reservation-page">
+      <div className="reservation-detail-container">
+        <div className="error-message">{error}</div>
+        <div className="detail-actions">
+          <button className="reservation-btn" onClick={() => navigate(-1)}>Go back</button>
+        </div>
       </div>
     </div>
   );
 
   if (!reservation) return (
-    <div className="container">
-      <div className="header">
-        <div className="text">Not Found</div>
-        <div className="underline"></div>
-      </div>
-      <div>No reservation found.</div>
-      <div className="submit-container">
-        <div className="submit" onClick={() => navigate(-1)}>Go back</div>
+    <div className="reservation-page">
+      <div className="reservation-detail-container">
+        <div className="error-message">No reservation found.</div>
+        <div className="detail-actions">
+          <button className="reservation-btn" onClick={() => navigate(-1)}>Go back</button>
+        </div>
       </div>
     </div>
   );
@@ -69,49 +71,79 @@ export default function ReservationDetail() {
   } = reservation;
 
   return (
-    <div className="container" style={{maxWidth: '800px'}}>
-      <div className="header">
-        <div className="text">Reservation Details</div>
-        <div className="underline"></div>
-      </div>
-
-      <div className="inputs">
-        <div className="input">
-          <span>ID:</span>
-          <div>{reservationId}</div>
-        </div>
-        <div className="input">
-          <span>User ID:</span>
-          <div>{user?.userID || "—"}</div>
-        </div>
-        <div className="input">
-          <span>User name:</span>
-          <div>{user?.name || "—"}</div>
-        </div>
-        <div className="input">
-          <span>Vehicle plate:</span>
-          <div>{vehicle?.licensePlate || "—"}</div>
-        </div>
-        <div className="input">
-          <span>Spot number:</span>
-          <div>{parkingSpot?.spotNumber ?? "—"}</div>
-        </div>
-        <div className="input">
-          <span>Date:</span>
-          <div>{date}</div>
-        </div>
-        <div className="input">
-          <span>Time:</span>
-          <div>{startTime} — {endTime}</div>
-        </div>
-        <div className="input">
-          <span>Price:</span>
-          <div>R{price}</div>
+    <div className="reservation-page">
+      {/* Hero Section */}
+      <div className="reservation-hero">
+        <div className="reservation-hero-content">
+          <h1>Reservation Details</h1>
+          <p>View your reservation information</p>
         </div>
       </div>
 
-      <div className="submit-container">
-        <div className="submit" onClick={() => navigate(-1)}>Back</div>
+      {/* Details Container */}
+      <div className="reservation-detail-container">
+        <div className="reservation-detail-header">
+          <div className="reservation-detail-title">Reservation #{reservationId}</div>
+          <div className="reservation-detail-underline"></div>
+        </div>
+
+        <div className="reservation-detail-content">
+          <div className="detail-card">
+            <h3>User Information</h3>
+            <div className="detail-grid">
+              <div className="detail-item">
+                <span className="detail-label">User ID:</span>
+                <span className="detail-value">{user?.userID || "—"}</span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-label">User Name:</span>
+                <span className="detail-value">{user?.name || "—"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="detail-card">
+            <h3>Vehicle Information</h3>
+            <div className="detail-grid">
+              <div className="detail-item">
+                <span className="detail-label">License Plate:</span>
+                <span className="detail-value">{vehicle?.licensePlate || "—"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="detail-card">
+            <h3>Parking Information</h3>
+            <div className="detail-grid">
+              <div className="detail-item">
+                <span className="detail-label">Spot Number:</span>
+                <span className="detail-value">{parkingSpot?.spotNumber || "—"}</span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-label">Date:</span>
+                <span className="detail-value">{date}</span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-label">Time:</span>
+                <span className="detail-value">{startTime} — {endTime}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="detail-card">
+            <h3>Payment Information</h3>
+            <div className="detail-grid">
+              <div className="detail-item">
+                <span className="detail-label">Price:</span>
+                <span className="detail-value">R{price}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="detail-actions">
+          <button className="reservation-btn" onClick={() => navigate(-1)}>Back to Reservations</button>
+        </div>
       </div>
     </div>
   );
