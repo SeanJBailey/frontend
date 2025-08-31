@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import NavBar from "./components/navbar";
@@ -9,6 +9,8 @@ import Login from "./components/pages/Login";
 import Signup from "./components/pages/Signup"; // Import Signup component
 import Home from "./components/pages/Home";
 import "./index.css";
+import Vehicles from "./components/pages/Vehicles";
+import Tickets from "./components/pages/Tickets";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,15 +91,15 @@ export default function App() {
           path="/vehicles" 
           element={
             isLoggedIn ? 
-            <div style={{padding:20}}>Vehicles page coming soon</div> : 
+             <Vehicles />: 
             <Navigate to="/login" replace />
           } 
         />
-         <Route 
+        <Route 
           path="/tickets" 
           element={
             isLoggedIn ? 
-            <Tickets /> :
+            <Tickets />: 
             <Navigate to="/login" replace />
           } 
         />
@@ -105,3 +107,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+
