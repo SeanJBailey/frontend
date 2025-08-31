@@ -93,11 +93,11 @@ export default function App() {
             <Navigate to="/login" replace />
           } 
         />
-        <Route 
+         <Route 
           path="/tickets" 
           element={
             isLoggedIn ? 
-            <div style={{padding:20}}>Tickets page coming soon</div> : 
+            <Tickets /> :
             <Navigate to="/login" replace />
           } 
         />
