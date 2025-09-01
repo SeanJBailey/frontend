@@ -9,8 +9,10 @@ import profile_icon from '../assets/profile.png';
 import gender_icon from '../assets/gender.png';
 import { Link } from 'react-router-dom';
 
-const Signup = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
+const Signup = ({ onLogin }) => { 
+  // Defines a Signup component with state for all the form fields. As the user types,
+  // formData will hold the latest values, and setFormData will update them.
+  const [formData, setFormData] = useState({ //represents all input fields in signup form, initlazises state of formdata
     name: '',
     contactNumber: '',
     dob: '',
@@ -20,6 +22,9 @@ const Signup = ({ onLogin }) => {
     password: ''
   });
 
+  // arrow function to handle input changes
+  // e respresents the event object
+  // it updates the formData state with the new value for the changed input field
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -27,11 +32,39 @@ const Signup = ({ onLogin }) => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Dummy registration - for now, just call onLogin
-    // You can add validation here if needed
-    onLogin();
+  const handleSubmit = async (e) => { // arrow function to handle form submission
+    e.preventDefault(); // stops the default form submission behavior
+
+      
+    try {
+      // sends a POST request to the backend API to create a new user with the form data
+      const response = await fetch('http://localhost:8080/user/signup', {
+        method: 'POST', // specifys this is a POST request
+        headers: { 'Content-Type': 'application/json' }, // tells server that request body is JSON
+        body: JSON.stringify({ // converts formData to JSON string
+          name: formData.name,
+          contactNumber: formData.contactNumber,
+          dob: formData.dob,
+          gender: formData.gender,
+          userName: formData.userName,
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Signup failed');
+      }
+
+      const data = await response.json(); // parses the JSON response from the server 
+      console.log('User has signed up:', data);
+
+      // calls method to reroute user after signup
+      onLogin();
+    } catch (error) {
+      console.error(error);
+      alert('Signup error: ' + error.message);
+    }
   };
 
   return (
