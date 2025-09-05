@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+// Uncomment if you have a CSS file
 import '../styles/Vehicles.css'; 
 
 export default function Vehicles() {
@@ -16,9 +18,66 @@ export default function Vehicles() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const formatDateTime = (dtString) => {
+  if (!dtString) return null;
+    return dtString.slice(0, 16);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted vehicle:", formData);
+
+    // Validate required fields
+    if (!formData.fullName || !formData.phone || !formData.model) {
+      alert("Please fill in all required fields!");
+      return;
+    }
+
+    // Prepare data for backend
+    const vehicleData = {
+      vehicleId: uuidv4(), // must exist
+      licensePlate: formData.licensePlate || "",
+      vehicleMake: formData.model || "",
+      vehicleModel: formData.model || "",
+      vehicleColour: "", // optional
+      vehicleVIN: formData.vin || "",
+      users: [], // empty for now
+      entryTime: formatDateTime(formData.entryTime),
+      exitTime: formatDateTime(formData.exitTime)
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/api/vehicle/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(vehicleData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Vehicle submitted successfully:", data);
+
+      // Reset form
+      setFormData({
+        fullName: "",
+        phone: "",
+        model: "",
+        vin: "",
+        licensePlate: "",
+        entryTime: "",
+        exitTime: ""
+      });
+
+      alert("Vehicle submitted successfully!");
+
+    } catch (error) {
+      console.error("Error submitting vehicle:", error);
+      alert("Error submitting vehicle. Check console for details.");
+    }
   };
 
   return (
@@ -108,5 +167,3 @@ export default function Vehicles() {
     </div>
   );
 }
-
-
